@@ -38,18 +38,13 @@ that all of this is my own work.
 
 
 \section*{Problem 1: [3 points]}
-
-
 \subsection*{Your Tasks}
 
+\textbf{Scenario 1} ($r_{\text{step}}=-1$, $R_1=10$, $R_2=5$): Reaches Goal 1. The mild per-step penalty is outweighed by Goal 1's larger reward, making the 7-step path to Goal 1 ($+3$) more valuable than the 4-step path to Goal 2 ($+1$).\\
 
-    \textbf{\color{red} For each scenario, report the whether it reaches a goal, and if so which one it reaches. Give a one sentence explanation for why it learned that trajectory in each scenario.}
+\textbf{Scenario 2} ($r_{\text{step}}=-2$, $R_1=10$, $R_2=5$): Reaches Goal 2. The doubled per-step penalty makes Goal 1's long path net-negative ($-4$), so the closer Goal 2 ($-3$) becomes optimal.\\
 
-
-
-
-
-
+\textbf{Scenario 3} ($r_{\text{step}}=+1$, $R_1=1$, $R_2=1$): Does not reach a goal. Every step yields $+1$ and reaching a goal terminates the episode, so the optimal policy is to never terminate.\\
 
 \newpage
 
@@ -58,12 +53,12 @@ that all of this is my own work.
  
 \textbf{\color{red}Attach a screenshot of the plot \texttt{eval/episode\_success} for this run up to 1 million steps from Wandb. }
 
-
-
-
-
-
-
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\linewidth]{path/to/ppo_eval_episode_success.png}
+    \caption{PPO training curve on the hammer task: \texttt{eval/episode\_success} over 1M environment steps.}
+    \label{fig:ppo_curve}
+\end{figure}
 
 \newpage
 
