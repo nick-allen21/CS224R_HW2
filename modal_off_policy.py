@@ -108,8 +108,8 @@ def train():
             "python", "-u", "train_off_policy.py",
             "--config-path", "/root/cfgs",
             "--config-name", "off_policy_config",
-            # "agent.num_critics=10",
-            # "utd=5"
+            "agent.num_critics=10",
+            "utd=5"
         ],
         cwd="/root",
         capture_output=False,

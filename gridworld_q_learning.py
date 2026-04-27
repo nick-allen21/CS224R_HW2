@@ -114,15 +114,19 @@ def choose_action(
     q_table: np.ndarray, state: tuple[int, int], epsilon: float, rng: np.random.Generator
 ) -> int:
     """Select an action with epsilon-greedy exploration."""
+    if rng.random() < epsilon:
+        return int(rng.integers(0, 4))
+    values = action_values(q_table, state)
+    tied = np.flatnonzero(values == values.max())
+    return int(rng.choice(tied))
 
-
-    ### YOUR CODE HERE ###
-    pass
-    ### YOUR CODE HERE ###
 
 def greedy_action(q_table: np.ndarray, state: tuple[int, int]) -> int:
     ### YOUR CODE HERE ###
-    pass
+
+    # return max from array of action values
+    return int(np.argmax(action_values(q_table, state)))
+
     ### YOUR CODE HERE ###
 
 
@@ -142,10 +146,25 @@ def train_q_learning(scenario: Scenario) -> tuple[np.ndarray, GridWorld]:
         epsilon = epsilon_for_episode(scenario, episode_idx)
         for _ in range(scenario.horizon):
 
+            # choose action via epsilon-greedy
+            action = choose_action(q_table, state, epsilon, rng)
 
-            ### YOUR CODE HERE ###
-            pass
-            ### YOUR CODE HERE ###
+            # step the environment
+            next_state, reward, done = env.step(state, action)
+
+            # Q-learning update
+            x, y = state
+            next_q_max = action_values(q_table, next_state).max()
+
+            # zero future on terminal
+            target = reward + scenario.gamma * (1 - done) * next_q_max
+            td_error = target - q_table[y, x, action]
+            q_table[y, x, action] += scenario.alpha * td_error
+
+            # (d) advance state and terminate if done
+            state = next_state
+            if done:
+                break
 
 
     return q_table, env

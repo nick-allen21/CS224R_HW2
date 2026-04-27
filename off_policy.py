@@ -126,8 +126,27 @@ class ACAgent:
             batch, self.device)
 
         ### YOUR CODE HERE ###
+        with torch.no_grad():
+            dist = self.actor(next_obs)
+            next_action = dist.sample(clip=self.stddev_clip)
 
+            target_q_list = self.critic_target(next_obs, next_action)
+            sampled = random.sample(target_q_list, 2)
+            target_q = torch.min(sampled[0], sampled[1])
+            y = reward + discount * target_q
 
+        q_list = self.critic(obs, action)
+        critic_loss = sum(F.mse_loss(q, y) for q in q_list)
+
+        self.critic_opt.zero_grad(set_to_none=True)
+        critic_loss.backward()
+        self.critic_opt.step()
+
+        utils.soft_update_params(self.critic, self.critic_target, self.critic_target_tau)
+
+        metrics['critic_loss'] = critic_loss.item()
+        metrics['critic_q_mean'] = torch.cat(q_list, dim=-1).mean().item()
+        metrics['target_q_mean'] = y.mean().item()
         #####################
         return metrics
 
@@ -160,7 +179,16 @@ class ACAgent:
             batch, self.device)
 
         ### YOUR CODE HERE ###
-
+        dist = self.actor(obs)
+        action = dist.sample(clip=self.stddev_clip)
+        q_list = self.critic(obs, action)
+        q = torch.stack(q_list, dim=0).mean(dim=0)
+        actor_loss = -q.mean()
+        self.actor_opt.zero_grad(set_to_none=True)
+        actor_loss.backward()
+        self.actor_opt.step()
+        metrics['actor_loss'] = actor_loss.item()
+        metrics['actor_q_mean'] = q.mean().item()
         ######################
 
         return metrics
@@ -194,8 +222,14 @@ class ACAgent:
         obs, action, _, _, _ = utils.to_torch(batch, self.device)
 
         ### YOUR CODE HERE ###
-        
+        dist = self.actor(obs)
+        loss = -dist.log_prob(action).sum(-1).mean()
 
+        self.actor_opt.zero_grad(set_to_none=True)
+        loss.backward()
+        self.actor_opt.step()
+
+        metrics['bc_loss'] = loss.item()
         #####################
 
 

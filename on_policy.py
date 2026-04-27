@@ -132,8 +132,9 @@ class PPOAgent:
         for t in reversed(range(T)):
 
             ### YOUR CODE HERE ###
-
-
+            delta = rewards[t] + discounts[t] * next_values[t] - values[t]
+            gae = delta + discounts[t] * self.gae_lambda * gae
+            advantages[t] = gae
             ### YOUR CODE HERE ###
 
         returns = advantages + values
@@ -193,8 +194,9 @@ class PPOAgent:
 
 
             ### YOUR CODE HERE ###
-            
-                        
+            values_all = self.critic(obs_all).squeeze(-1)
+            next_values_all = self.critic(next_obs_all).squeeze(-1)
+            advantages_all, returns_all = self.compute_gae(rew_all, values_all, next_values_all, disc_all, done_all)
             ### YOUR CODE HERE ###
 
 
@@ -238,11 +240,10 @@ class PPOAgent:
                 # Clipped surrogate (PPO-Clip objective) 
 
                 ### YOUR CODE HERE ###
-
-                
-                
-                
-
+                ratio = torch.exp(new_log_prob - olp_ep)
+                unclipped = ratio * adv_ep
+                clipped = torch.clamp(ratio, 1 - self.clip_eps, 1 + self.clip_eps) * adv_ep
+                policy_loss = -torch.min(unclipped, clipped).mean()
                 ### YOUR CODE HERE ###
 
                 # Reverse KL to frozen reference policy:
