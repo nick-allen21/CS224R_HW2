@@ -55,7 +55,7 @@ that all of this is my own work.
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=\linewidth]{path/to/ppo_eval_episode_success.png}
+    \includegraphics[width=\linewidth]{}
     \caption{PPO training curve on the hammer task: \texttt{eval/episode\_success} over 1M environment steps.}
     \label{fig:ppo_curve}
 \end{figure}
@@ -67,11 +67,25 @@ that all of this is my own work.
 
 \noindent\textbf{\color{red}Attach a screenshot of the plot ``eval/episode\_success" for the off-policy run from Wandb up to 100k steps. You should achieve a success rate of at least 90\% before 100K environment steps.}
 
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\linewidth]{imgs/off policy.num critics=2,utd=1.png}
+    \caption{Off-policy actor-critic (2 critics, UTD=1) training curve: \texttt{eval/episode\_success} over 100k environment steps.}
+    \label{fig:utd1_curve}
+\end{figure}
+
 \newpage
 
 
 
 \noindent\textbf{\color{red}Attach a screenshot of the plot ``eval/episode\_success" for the off-policy UTD 5 run up to 40k steps and compare it to the previous question. Provide a brief, one-sentence explanation of why we observe these effects.}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\linewidth]{imgs/off policy.num critics=2,utd=1.png}
+    \caption{Off-policy actor-critic (10 critics, UTD=5) training curve: \texttt{eval/episode\_success} over 40k environment steps.}
+    \label{fig:utd1_curve}
+\end{figure}
 
 \newpage
 
